@@ -17,7 +17,7 @@ public class Code {
 
     @Id
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private UUID id = UUID.randomUUID();
+    private final UUID id = UUID.randomUUID();
 
     public Code() {
     }
@@ -47,8 +47,7 @@ public class Code {
     }
 
     private LocalDateTime setDate(){
-        LocalDateTime dateTime = LocalDateTime.now();
-        return dateTime;
+        return LocalDateTime.now();
     }
 
     public long getTime() {

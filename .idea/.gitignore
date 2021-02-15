@@ -190,3 +190,6 @@
 /modules.xml
 /uiDesigner.xml
 /vcs.xml
+/libraries/Gradle__org_assertj_assertj_core_3_11_1.xml
+/libraries/Gradle__org_assertj_assertj_swing_3_9_2.xml
+/libraries/Gradle__org_assertj_assertj_swing_junit_3_9_2.xml

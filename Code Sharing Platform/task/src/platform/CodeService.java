@@ -27,8 +27,7 @@ public class CodeService {
         UUID uuid = new UUID(
                 new BigInteger(s2.substring(0, 16), 16).longValue(),
                 new BigInteger(s2.substring(16), 16).longValue());
-        Optional<Code> code = codeRepository.findById(uuid);
-        return code;
+        return codeRepository.findById(uuid);
     }
 
     public List<Code> getLatest() {
@@ -64,7 +63,6 @@ public class CodeService {
     public long consumedTime(LocalDateTime date) {
         LocalTime dateOfCode = date.toLocalTime();
         LocalTime thisMoment = LocalTime.now();
-        long seconds = thisMoment.toSecondOfDay() - dateOfCode.toSecondOfDay();
-        return seconds;
+        return thisMoment.toSecondOfDay() - dateOfCode.toSecondOfDay();
     }
 }
