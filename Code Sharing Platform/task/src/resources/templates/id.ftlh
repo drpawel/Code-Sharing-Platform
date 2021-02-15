@@ -13,10 +13,10 @@
 </head>
 <body>
     <span id="load_date">${code.date}</span>
-    <#if code.views !=0>
+    <#if code.viewsRestriction == true>
         <p><u><span id="views_restriction" style="">${code.views}</span></u> more views allowed</p>
     </#if>
-    <#if code.time !=0>
+    <#if code.timeRestriction == true>
         <p>The code will be available for <u><span id="time_restriction">${code.time}</span></u> seconds</p>
     </#if>
     <pre id="code_snippet"><code>${code.code}</code></pre>

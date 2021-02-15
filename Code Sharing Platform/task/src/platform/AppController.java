@@ -25,7 +25,7 @@ public class AppController {
         Optional<Code> tmp = codeService.getCode(UUID);
         if(tmp.isPresent()){
             Code code = tmp.get();
-            checkRestrictions(code);
+            codeService.checkRestrictions(code);
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.addObject("code",code);
             modelAndView.setViewName("id");
@@ -56,7 +56,7 @@ public class AppController {
         Optional<Code> tmp = codeService.getCode(UUID);
         if (tmp.isPresent()) {
             Code code = tmp.get();
-            checkRestrictions(code);
+            codeService.checkRestrictions(code);
             return code;
         } else {
             throw new CodeNotFoundException();
@@ -69,46 +69,4 @@ public class AppController {
         return codeService.getLatest();
     }
 
-    private void checkRestrictions(Code code){
-        if (code.getTime()>0 && code.getViews()>0) {
-            long consumedTime = codeService.consumedTime(code.getDate());
-            if (consumedTime < code.getTime() && code.getViews() > 0) {
-                code.setTime(code.getTime() - consumedTime);
-                code.setViews(code.getViews() - 1);
-                if(code.getTime()==0 || code.getViews()==0){
-                    codeService.delete(code);
-                }else{
-                    codeService.save(code);
-                }
-            } else {
-                codeService.delete(code);
-                throw new CodeNotFoundException();
-            }
-        } else if (code.getTime()>0) {
-            long consumedTime = codeService.consumedTime(code.getDate());
-            if (consumedTime < code.getTime()) {
-                code.setTime(code.getTime() - consumedTime);
-                if(code.getTime()==0 || code.getViews()==0){
-                    codeService.delete(code);
-                }else{
-                    codeService.save(code);
-                }
-            }  else {
-                codeService.delete(code);
-                throw new CodeNotFoundException();
-            }
-        } else if (code.getViews()>0) {
-            if (code.getViews() > 0) {
-                code.setViews(code.getViews() - 1);
-                if(code.getTime()==0 || code.getViews()==0){
-                    codeService.delete(code);
-                }else{
-                    codeService.save(code);
-                }
-            } else {
-                codeService.delete(code);
-                throw new CodeNotFoundException();
-            }
-        }
-    }
 }

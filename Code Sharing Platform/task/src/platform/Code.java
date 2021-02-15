@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.UUID;
 
 @Entity
@@ -15,6 +13,7 @@ public class Code {
     private String code;
     private LocalDateTime date;
     private long time, views;
+    private boolean timeRestriction, viewsRestriction;
 
     @Id
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -26,6 +25,8 @@ public class Code {
     public Code(String code) {
         this.code = code;
         this.date = setDate();
+        this.timeRestriction = false;
+        this.viewsRestriction = false;
     }
 
     public String getCode() {
@@ -42,13 +43,11 @@ public class Code {
     }
 
     public LocalDateTime getDate() {
-        return date;
+        return date.withNano(0);
     }
 
     private LocalDateTime setDate(){
-        LocalDate localDate = LocalDate.now();
-        LocalTime localTime = LocalTime.now().withNano(0);
-        LocalDateTime dateTime = LocalDateTime.of(localDate,localTime);
+        LocalDateTime dateTime = LocalDateTime.now();
         return dateTime;
     }
 
@@ -66,5 +65,23 @@ public class Code {
 
     public void setViews(long views) {
         this.views = views;
+    }
+
+    @JsonIgnore
+    public boolean isTimeRestriction() {
+        return timeRestriction;
+    }
+
+    public void setTimeRestriction(boolean timeRestriction) {
+        this.timeRestriction = timeRestriction;
+    }
+
+    @JsonIgnore
+    public boolean isViewsRestriction() {
+        return viewsRestriction;
+    }
+
+    public void setViewsRestriction(boolean viewsRestriction) {
+        this.viewsRestriction = viewsRestriction;
     }
 }

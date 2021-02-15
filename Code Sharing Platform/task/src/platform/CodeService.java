@@ -1,8 +1,6 @@
 package platform;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -19,11 +17,9 @@ public class CodeService {
     }
 
     public void save(Code code){
+        code.setTimeRestriction(code.getTime()>0);
+        code.setViewsRestriction(code.getViews()>0);
         codeRepository.save(code);
-    }
-
-    public void delete(Code code){
-        codeRepository.delete(code);
     }
 
     public Optional<Code> getCode(String s){
@@ -36,10 +32,33 @@ public class CodeService {
     }
 
     public List<Code> getLatest() {
-        PageRequest pageable = PageRequest.of(0, 10);
-        return codeRepository.findLatest(0, 0,
-                pageable).getContent();
-        //return codeRepository.findTop10ByTimeEqualsAndViewsEqualsOrderByDateDesc(0,0);
+        return codeRepository.findTop10ByTimeRestrictionFalseAndViewsRestrictionFalseOrderByDateDesc();
+    }
+
+    public void checkRestrictions(Code code){
+        if (code.isTimeRestriction()) {
+            long consumedTime = consumedTime(code.getDate());
+            if (consumedTime < code.getTime()) {
+                code.setTime(code.getTime() - consumedTime);
+                codeRepository.save(code);
+            } else {
+                codeRepository.delete(code);
+                throw new CodeNotFoundException();
+            }
+        }
+
+        if (code.isViewsRestriction()) {
+            if(code.getViews() == 1){
+                code.setViews(code.getViews() - 1);
+                codeRepository.delete(code);
+            }else if (code.getViews() > 0) {
+                code.setViews(code.getViews() - 1);
+                codeRepository.save(code);
+            } else {
+                codeRepository.delete(code);
+                throw new CodeNotFoundException();
+            }
+        }
     }
 
     public long consumedTime(LocalDateTime date) {
